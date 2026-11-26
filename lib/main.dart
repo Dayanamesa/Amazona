@@ -38,26 +38,15 @@ class Inicio extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 20),
-            foto('assets/images/amazona1.jpg', 'Norelia de Fátima',
-                'Retrato en grafito'),
-            foto('assets/images/amazona2.jpg', 'Gloria Idalid',
-                'Retrato en carboncillo'),
-            foto('assets/images/amazona3.png', 'Liliana Pérez',
-                'Nuestra familia'),
+            foto('assets/images/amazona1.jpg'),
+            foto('assets/images/amazona2.jpg'),
+            foto('assets/images/amazona3.png'),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => quienesSomos(context),
             child: const Text('Quiénes somos'),
-          ),
-          TextButton(
-            onPressed: () => nuestroTrabajo(context),
-            child: const Text('Nuestro trabajo'),
-          ),
-          TextButton(
-            onPressed: () => publicaciones(context),
-            child: const Text('Publicaciones'),
           ),
           const SizedBox(width: 16),
         ],
@@ -88,33 +77,18 @@ class Inicio extends StatelessWidget {
     );
   }
 
-  // Foto redonda con el nombre debajo
-  // y una descripción que aparece al pasar el mouse
-  Widget foto(String ruta, String nombre, String descripcion) {
-    // WIDGET NO COMÚN 2: Tooltip
-    return Tooltip(
-      message: descripcion,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircleAvatar(
-              radius: 36,
-              backgroundImage: AssetImage(ruta),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              nombre,
-              style: const TextStyle(fontSize: 12, color: Colors.black),
-            ),
-          ],
-        ),
+  // Foto redonda
+  Widget foto(String ruta) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: CircleAvatar(
+        radius: 36,
+        backgroundImage: AssetImage(ruta),
       ),
     );
   }
 
-  // Recuadro reutilizable para las tres secciones
+  // Recuadro reutilizable
   void ventana(BuildContext context, String titulo, Widget contenido) {
     showDialog(
       context: context,
@@ -140,59 +114,10 @@ class Inicio extends StatelessWidget {
       context,
       'Quiénes somos',
       const Text(
-        'Somos una compañía que busca el desarrollo tecnológico '
-        'a través del liderazgo personal y empresarial.',
-      ),
-    );
-  }
-
-  void nuestroTrabajo(BuildContext context) {
-    ventana(
-      context,
-      'Nuestro trabajo',
-      const Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Ofrecemos un método de liderazgo donde cada compra se '
-            'convierte en un aporte económico a diferentes fundaciones.',
-          ),
-          SizedBox(height: 16),
-          // WIDGET NO COMÚN 3: Chip (etiquetas)
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              Chip(label: Text('Grafito')),
-              Chip(label: Text('Carboncillo')),
-              Chip(label: Text('Retrato')),
-              Chip(label: Text('Fotografía')),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  void publicaciones(BuildContext context) {
-    ventana(
-      context,
-      'Publicaciones',
-      const Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // WIDGET NO COMÚN 4: ExpansionTile (se abre y se cierra)
-          ExpansionTile(
-            title: Text('Próximamente'),
-            children: [
-              Padding(
-                padding: EdgeInsets.all(12),
-                child: Text('Nuestras publicaciones las verán con el tiempo.'),
-              ),
-            ],
-          ),
-        ],
+        'Somos una compañía que trabaja para el desarrollo humano '
+        'a través de esta aplicación interactiva, donde aprendes a '
+        'tomar buenas decisiones y haces que la disciplina se '
+        'convierta en tu día a día sin ser abrumadora.',
       ),
     );
   }
