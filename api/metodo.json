@@ -1,0 +1,153 @@
+{
+  "version": 1,
+  "frases": [
+    "Hoy empiezo sin reproche.",
+    "Lo que cuido, me cuida.",
+    "Un día a la vez, con propósito.",
+    "Ordeno mi espacio, ordeno mi mente.",
+    "No necesito hacerlo perfecto, necesito hacerlo hoy.",
+    "Mi fuerza está en levantarme.",
+    "Sirvo, luego soy parte de algo más grande.",
+    "Lo pequeño, repetido, se vuelve grande.",
+    "Hoy avanzo un paso en lo que me importa.",
+    "Cierro el día en paz con lo que hice."
+  ],
+  "etapas": [
+    {
+      "numero": 1,
+      "nombre": "Despertar",
+      "meses": "Mes 1",
+      "descripcion": "Solo la mañana. Crear el primer hábito."
+    },
+    {
+      "numero": 2,
+      "nombre": "Raíz",
+      "meses": "Meses 2 a 3",
+      "descripcion": "Mañana y noche. El día tiene inicio y cierre."
+    },
+    {
+      "numero": 3,
+      "nombre": "Propósito",
+      "meses": "Meses 4 a 6",
+      "descripcion": "Día completo: llega el proyecto personal."
+    },
+    {
+      "numero": 4,
+      "nombre": "Servicio",
+      "meses": "Meses 7 a 12",
+      "descripcion": "Hacer equipo en casa y servir a otros."
+    },
+    {
+      "numero": 5,
+      "nombre": "Amazona",
+      "meses": "Meses 13 a 17",
+      "descripcion": "Sostener el método y acompañar a alguien más."
+    }
+  ],
+  "momentos": [
+    {
+      "id": "manana",
+      "nombre": "Mañana",
+      "verbo": "Ordenar",
+      "gratis": true,
+      "pasos": [
+        {
+          "id": "m1",
+          "titulo": "Levantarme sin reproche y tender la cama",
+          "duracion": "7 min",
+          "descripcion": "Lo primero del día es un logro pequeño y seguro. Si ayer fallaste, hoy empiezas de nuevo.",
+          "instruccion": "Ordeno mi espacio, ordeno mi mente.",
+          "tipo": "normal"
+        },
+        {
+          "id": "m2",
+          "titulo": "Ordenar y limpiar la casa",
+          "duracion": "30 a 40 min",
+          "descripcion": "Una tarea distinta cada día, siempre la cama y la habitación. Si vives con más personas, cada quien tiene la suya.",
+          "instruccion": "Lo que cuido, me cuida.",
+          "tipo": "normal"
+        },
+        {
+          "id": "m3",
+          "titulo": "Elegir mi frase del día",
+          "duracion": "3 a 5 min",
+          "descripcion": "Antes de comer, repite una frase que te dé propósito para hoy. Puedes usar la frase del día de la app o crear la tuya.",
+          "instruccion": null,
+          "tipo": "normal"
+        },
+        {
+          "id": "m4",
+          "titulo": "Primera comida y alimentos del día",
+          "duracion": "hasta 1 h",
+          "descripcion": "Come con calma. Dos días por semana prepara la comida para ahorrar tiempo los demás días.",
+          "instruccion": "Me alimento para tener fuerza.",
+          "tipo": "normal"
+        }
+      ]
+    },
+    {
+      "id": "tarde",
+      "nombre": "Tarde",
+      "verbo": "Construir",
+      "gratis": false,
+      "pasos": [
+        {
+          "id": "t1",
+          "titulo": "Definir el avance de hoy",
+          "duracion": "5 min",
+          "descripcion": "Piensa en tu proyecto personal y elige una acción pequeña y concreta para hoy, no solo trabajar en el proyecto.",
+          "instruccion": null,
+          "tipo": "normal"
+        },
+        {
+          "id": "t2",
+          "titulo": "Trabajar en un tiempo protegido",
+          "duracion": "30 min o más",
+          "descripcion": "Sin interrupciones. Empieza con 30 minutos y ve subiendo a tu ritmo.",
+          "instruccion": "Hoy avanzo un paso en lo que me importa.",
+          "tipo": "normal"
+        },
+        {
+          "id": "t3",
+          "titulo": "Anotar lo que avancé",
+          "duracion": "5 min",
+          "descripcion": "Ver el progreso es lo que mantiene la constancia.",
+          "instruccion": null,
+          "tipo": "normal"
+        }
+      ]
+    },
+    {
+      "id": "noche",
+      "nombre": "Noche",
+      "verbo": "Cerrar en paz",
+      "gratis": false,
+      "pasos": [
+        {
+          "id": "n1",
+          "titulo": "Reflexionar",
+          "duracion": "10 min",
+          "descripcion": "Responde tres preguntas sobre tu día. Tus respuestas son privadas y se quedan en tu teléfono.",
+          "instruccion": null,
+          "tipo": "reflexion"
+        },
+        {
+          "id": "n2",
+          "titulo": "Comer con calma",
+          "duracion": "30 min",
+          "descripcion": "Una cena tranquila, sin afán y sin pantallas. En compañía, si se puede.",
+          "instruccion": null,
+          "tipo": "normal"
+        },
+        {
+          "id": "n3",
+          "titulo": "Dormir en paz",
+          "duracion": "10 min",
+          "descripcion": "Deja listo lo de mañana y cierra el día repitiendo tu frase.",
+          "instruccion": "Cierro el día en paz con lo que hice.",
+          "tipo": "normal"
+        }
+      ]
+    }
+  ]
+}

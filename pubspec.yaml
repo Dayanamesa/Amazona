@@ -1,21 +1,25 @@
-name: primer_proyecto
-description: "A new Flutter project."
+name: amazona
+description: "Método Amazona: hábitos diarios para liderar tu propia vida."
 publish_to: 'none'
 version: 0.1.0+1
 
 environment:
-  sdk: ^3.13.5
+  sdk: ^3.5.0
 
 dependencies:
   flutter:
     sdk: flutter
+  # Consumo de la API (lo visto en clase)
+  http: ^1.2.2
+  # Persistencia con SQLite (se usa en la fase 2)
+  sqflite: ^2.4.1
+  # Para armar la ruta del archivo de la base de datos (fase 2)
+  path: ^1.9.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
+  flutter_lints: ^4.0.0
 
 flutter:
-  uses-material-design: true 
-  assets:
-    - assets/images/
+  uses-material-design: true
