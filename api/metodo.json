@@ -1,5 +1,19 @@
 {
-  "version": 1,
+  "version": 2,
+  "compra": {
+    "precio_usd": 29.0,
+    "porcentaje_donacion": 15,
+    "fundacion": {
+      "nombre": "Hogar Madre de Dios",
+      "descripcion": "Hogar de donde nace el método Amazona. Por ahora es nuestra fundación aliada; más adelante serán tres."
+    },
+    "incluye": [
+      "Las 5 etapas del recorrido de 17 meses",
+      "La tarde: tu proyecto personal",
+      "La noche: reflexión guardada en tu teléfono",
+      "Nuevas frases y pasos sin actualizar la app"
+    ]
+  },
   "frases": [
     "Hoy empiezo sin reproche.",
     "Lo que cuido, me cuida.",

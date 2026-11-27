@@ -89,22 +89,62 @@ class Etapa {
   }
 }
 
+/// Datos del método completo: precio, donación y fundación (vienen de la API).
+class InfoCompra {
+  final double precioUsd;
+  final int porcentajeDonacion;
+  final String nombreFundacion;
+  final String descripcionFundacion;
+  final List<String> incluye;
+
+  const InfoCompra({
+    required this.precioUsd,
+    required this.porcentajeDonacion,
+    required this.nombreFundacion,
+    required this.descripcionFundacion,
+    required this.incluye,
+  });
+
+  /// Dinero que va a la fundación por cada compra.
+  double get donacionUsd => precioUsd * porcentajeDonacion / 100;
+
+  factory InfoCompra.fromJson(Map<String, dynamic> json) {
+    final fundacion = json['fundacion'] as Map<String, dynamic>;
+    return InfoCompra(
+      // "as num" acepta 29 o 29.0 en el JSON.
+      precioUsd: (json['precio_usd'] as num).toDouble(),
+      porcentajeDonacion: json['porcentaje_donacion'] as int,
+      nombreFundacion: fundacion['nombre'] as String,
+      descripcionFundacion: fundacion['descripcion'] as String,
+      incluye: (json['incluye'] as List<dynamic>).cast<String>(),
+    );
+  }
+}
+
 class ContenidoMetodo {
   final int version;
   final List<String> frases;
   final List<Etapa> etapas;
   final List<Momento> momentos;
 
+  /// Puede ser null si el JSON no trae la sección "compra".
+  final InfoCompra? compra;
+
   const ContenidoMetodo({
     required this.version,
     required this.frases,
     required this.etapas,
     required this.momentos,
+    this.compra,
   });
 
   factory ContenidoMetodo.fromJson(Map<String, dynamic> json) {
+    final datosCompra = json['compra'];
     return ContenidoMetodo(
       version: json['version'] as int,
+      compra: datosCompra == null
+          ? null
+          : InfoCompra.fromJson(datosCompra as Map<String, dynamic>),
       frases: (json['frases'] as List<dynamic>).cast<String>(),
       etapas: (json['etapas'] as List<dynamic>)
           .map((e) => Etapa.fromJson(e as Map<String, dynamic>))
