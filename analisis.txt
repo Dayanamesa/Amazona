@@ -1,0 +1,11 @@
+Analyzing Amarzona...                                           
+
+  error - Target of URI doesn't exist: '../widgets/foto_redonda.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist - lib\pantallas\inicio_pantalla.dart:7:8 - uri_does_not_exist
+  error - Invalid constant value - lib\pantallas\inicio_pantalla.dart:176:13 - invalid_constant
+  error - The method 'FotoRedonda' isn't defined for the type '_InicioPantallaState'. Try correcting the name to the name of an existing method, or defining a method named 'FotoRedonda' - lib\pantallas\inicio_pantalla.dart:176:13 - undefined_method
+  error - The values in a const list literal must be constants. Try removing the keyword 'const' from the list literal - lib\pantallas\inicio_pantalla.dart:176:13 - non_constant_list_element
+  error - The method 'FotoRedonda' isn't defined for the type '_InicioPantallaState'. Try correcting the name to the name of an existing method, or defining a method named 'FotoRedonda' - lib\pantallas\inicio_pantalla.dart:177:13 - undefined_method
+  error - The values in a const list literal must be constants. Try removing the keyword 'const' from the list literal - lib\pantallas\inicio_pantalla.dart:177:13 - non_constant_list_element
+  error - The method 'FotoRedonda' isn't defined for the type '_InicioPantallaState'. Try correcting the name to the name of an existing method, or defining a method named 'FotoRedonda' - lib\pantallas\inicio_pantalla.dart:178:13 - undefined_method
+  error - The values in a const list literal must be constants. Try removing the keyword 'const' from the list literal - lib\pantallas\inicio_pantalla.dart:178:13 - non_constant_list_element
+
