@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../modelos/contenido_metodo.dart';
+import '../modelos/reflexion.dart';
+import '../servicios/base_datos.dart';
 import '../utilidades/tema_amazona.dart';
 
 /// Pantalla 3: detalle de un paso. Si es la reflexión de la noche, muestra el formulario.
@@ -26,6 +28,31 @@ class _PasoPantallaState extends State<PasoPantalla> {
   final _cumpliControlador = TextEditingController();
   final _costoControlador = TextEditingController();
   final _agradezcoControlador = TextEditingController();
+  bool _guardando = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.paso.esReflexion) {
+      _cargarReflexionDeHoy();
+    }
+  }
+
+  /// Si ya hay una reflexión guardada hoy, la muestra en el formulario.
+  Future<void> _cargarReflexionDeHoy() async {
+    try {
+      final guardada =
+          await BaseDatos.instancia.reflexionDe(BaseDatos.fechaDeHoy());
+      if (guardada == null || !mounted) return;
+      setState(() {
+        _cumpliControlador.text = guardada.cumpli;
+        _costoControlador.text = guardada.costo;
+        _agradezcoControlador.text = guardada.agradezco;
+      });
+    } catch (e) {
+      // Si no se puede leer, el formulario simplemente aparece vacío.
+    }
+  }
 
   @override
   void dispose() {
@@ -45,12 +72,32 @@ class _PasoPantallaState extends State<PasoPantalla> {
     return null;
   }
 
-  void _marcarComoHecho() {
+  Future<void> _marcarComoHecho() async {
     if (widget.paso.esReflexion) {
       final valido = _formulario.currentState!.validate();
       if (!valido) return;
-      // Fase 2: aquí se guardan las tres respuestas en SQLite.
+
+      setState(() => _guardando = true);
+      try {
+        await BaseDatos.instancia.guardarReflexion(
+          Reflexion(
+            fecha: BaseDatos.fechaDeHoy(),
+            cumpli: _cumpliControlador.text.trim(),
+            costo: _costoControlador.text.trim(),
+            agradezco: _agradezcoControlador.text.trim(),
+          ),
+        );
+      } catch (e) {
+        if (!mounted) return;
+        setState(() => _guardando = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('No se pudo guardar tu reflexión. Intenta de nuevo.')),
+        );
+        return;
+      }
     }
+    if (!mounted) return;
     Navigator.pop(context, true);
   }
 
@@ -93,7 +140,7 @@ class _PasoPantallaState extends State<PasoPantalla> {
           ],
           const SizedBox(height: 32),
           FilledButton.icon(
-            onPressed: _marcarComoHecho,
+            onPressed: _guardando ? null : _marcarComoHecho,
             icon: const Icon(Icons.check),
             label: Text(widget.yaHecho ? 'Ya lo cumplí hoy' : 'Marcar como hecho'),
             style: FilledButton.styleFrom(
