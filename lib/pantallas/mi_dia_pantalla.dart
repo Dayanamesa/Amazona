@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../modelos/contenido_metodo.dart';
+import '../servicios/base_datos.dart';
 import '../utilidades/tema_amazona.dart';
 import '../widgets/tarjeta_paso.dart';
 import 'paso_pantalla.dart';
 
 /// Pantalla 2: los pasos del día, agrupados en mañana, tarde y noche.
+/// Los pasos cumplidos se guardan en SQLite y se leen al abrir la pantalla.
 class MiDiaPantalla extends StatefulWidget {
   final ContenidoMetodo contenido;
   final bool metodoComprado;
@@ -21,19 +23,42 @@ class MiDiaPantalla extends StatefulWidget {
 }
 
 class _MiDiaPantallaState extends State<MiDiaPantalla> {
-  // Ids de los pasos cumplidos hoy.
-  // Fase 1: solo en memoria. Fase 2: se guardan y se leen de SQLite.
-  final Set<String> _pasosHechos = {};
+  final BaseDatos _baseDatos = BaseDatos.instancia;
+  final String _hoy = BaseDatos.fechaDeHoy();
+
+  // Ids de los pasos cumplidos hoy (leídos de SQLite).
+  Set<String> _pasosHechos = {};
+  bool _cargando = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _cargarPasosDeHoy();
+  }
+
+  Future<void> _cargarPasosDeHoy() async {
+    try {
+      final pasos = await _baseDatos.pasosCumplidos(_hoy);
+      if (!mounted) return;
+      setState(() {
+        _pasosHechos = pasos;
+        _cargando = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _cargando = false);
+      _mostrarMensaje('No se pudieron leer tus pasos guardados.');
+    }
+  }
+
+  void _mostrarMensaje(String texto) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(texto)));
+  }
 
   Future<void> _abrirPaso(Momento momento, Paso paso) async {
     final bloqueado = !momento.gratis && !widget.metodoComprado;
     if (bloqueado) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-              '${momento.nombre} está disponible en el método completo.'),
-        ),
-      );
+      _mostrarMensaje('${momento.nombre} está disponible en el método completo.');
       return;
     }
 
@@ -49,54 +74,72 @@ class _MiDiaPantallaState extends State<MiDiaPantalla> {
       ),
     );
 
-    if (cumplido == true) {
+    if (cumplido != true) return;
+
+    try {
+      await _baseDatos.marcarPaso(_hoy, paso.id);
+      if (!mounted) return;
       setState(() {
         _pasosHechos.add(paso.id);
       });
+    } catch (e) {
+      if (!mounted) return;
+      _mostrarMensaje('No se pudo guardar el paso. Intenta de nuevo.');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final total =
-        widget.contenido.totalPasos(metodoComprado: widget.metodoComprado);
-    final hechos = _pasosHechos.length;
-
     return Scaffold(
       appBar: AppBar(title: const Text('Mi día')),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          Text(
-            '$hechos de $total pasos cumplidos',
-            style: const TextStyle(fontSize: 16, color: TemaAmazona.grisTexto),
+      body: _cargando
+          ? const Center(child: CircularProgressIndicator())
+          : _construirLista(),
+    );
+  }
+
+  Widget _construirLista() {
+    final total =
+        widget.contenido.totalPasos(metodoComprado: widget.metodoComprado);
+    // Solo se cuentan los pasos de los momentos a los que hay acceso.
+    final hechos = widget.contenido.momentos
+        .where((m) => m.gratis || widget.metodoComprado)
+        .expand((m) => m.pasos)
+        .where((p) => _pasosHechos.contains(p.id))
+        .length;
+
+    return ListView(
+      padding: const EdgeInsets.all(20),
+      children: [
+        Text(
+          '$hechos de $total pasos cumplidos',
+          style: const TextStyle(fontSize: 16, color: TemaAmazona.grisTexto),
+        ),
+        const SizedBox(height: 8),
+        LinearProgressIndicator(
+          value: total == 0 ? 0 : hechos / total,
+          minHeight: 8,
+          borderRadius: BorderRadius.circular(8),
+          backgroundColor: TemaAmazona.grisBorde,
+        ),
+        const SizedBox(height: 24),
+        for (final momento in widget.contenido.momentos) ...[
+          _EncabezadoMomento(
+            momento: momento,
+            bloqueado: !momento.gratis && !widget.metodoComprado,
           ),
-          const SizedBox(height: 8),
-          LinearProgressIndicator(
-            value: total == 0 ? 0 : hechos / total,
-            minHeight: 8,
-            borderRadius: BorderRadius.circular(8),
-            backgroundColor: TemaAmazona.grisBorde,
-          ),
-          const SizedBox(height: 24),
-          for (final momento in widget.contenido.momentos) ...[
-            _EncabezadoMomento(
-              momento: momento,
+          const SizedBox(height: 10),
+          for (var i = 0; i < momento.pasos.length; i++)
+            TarjetaPaso(
+              paso: momento.pasos[i],
+              numero: i + 1,
+              hecho: _pasosHechos.contains(momento.pasos[i].id),
               bloqueado: !momento.gratis && !widget.metodoComprado,
+              alTocar: () => _abrirPaso(momento, momento.pasos[i]),
             ),
-            const SizedBox(height: 10),
-            for (var i = 0; i < momento.pasos.length; i++)
-              TarjetaPaso(
-                paso: momento.pasos[i],
-                numero: i + 1,
-                hecho: _pasosHechos.contains(momento.pasos[i].id),
-                bloqueado: !momento.gratis && !widget.metodoComprado,
-                alTocar: () => _abrirPaso(momento, momento.pasos[i]),
-              ),
-            const SizedBox(height: 20),
-          ],
+          const SizedBox(height: 20),
         ],
-      ),
+      ],
     );
   }
 }
