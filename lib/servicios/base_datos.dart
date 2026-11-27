@@ -1,6 +1,7 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../modelos/compra.dart';
 import '../modelos/reflexion.dart';
 
 /// Servicio que guarda y lee los datos del método en SQLite (sqflite).
@@ -8,6 +9,7 @@ import '../modelos/reflexion.dart';
 /// Tablas:
 /// - pasos_cumplidos: qué pasos se cumplieron cada día.
 /// - reflexiones: las tres respuestas de la noche, una por día.
+/// - compras: la compra simulada del método completo (versión 2).
 ///
 /// Se usa una sola instancia en toda la app (BaseDatos.instancia)
 /// para no abrir la base de datos varias veces.
@@ -16,7 +18,8 @@ class BaseDatos {
   static final BaseDatos instancia = BaseDatos._();
 
   static const String _nombreArchivo = 'amazona.db';
-  static const int _version = 1;
+  // Versión 1: pasos_cumplidos y reflexiones. Versión 2: se agrega compras.
+  static const int _version = 2;
 
   Database? _db;
 
@@ -50,8 +53,30 @@ class BaseDatos {
             agradezco TEXT NOT NULL
           )
         ''');
+        await _crearTablaCompras(db);
+      },
+      // Si la app ya tenía la base de datos de la versión 1, solo se agrega
+      // la tabla nueva y se conservan los pasos y reflexiones guardados.
+      onUpgrade: (db, versionAnterior, versionNueva) async {
+        if (versionAnterior < 2) {
+          await _crearTablaCompras(db);
+        }
       },
     );
+  }
+
+  Future<void> _crearTablaCompras(Database db) async {
+    await db.execute('''
+      CREATE TABLE compras (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        fecha TEXT NOT NULL,
+        nombre TEXT NOT NULL,
+        correo TEXT NOT NULL,
+        monto_usd REAL NOT NULL,
+        donacion_usd REAL NOT NULL,
+        fundacion TEXT NOT NULL
+      )
+    ''');
   }
 
   /// Fecha de hoy en formato AAAA-MM-DD, por ejemplo 2026-11-27.
@@ -117,5 +142,20 @@ class BaseDatos {
     );
     if (filas.isEmpty) return null;
     return Reflexion.desdeMapa(filas.first);
+  }
+
+  // ---------- Compra simulada ----------
+
+  Future<void> guardarCompra(Compra compra) async {
+    final db = await _baseDatos;
+    await db.insert('compras', compra.aMapa());
+  }
+
+  /// La compra guardada, o null si todavía no se ha comprado el método.
+  Future<Compra?> obtenerCompra() async {
+    final db = await _baseDatos;
+    final filas = await db.query('compras', orderBy: 'id DESC', limit: 1);
+    if (filas.isEmpty) return null;
+    return Compra.desdeMapa(filas.first);
   }
 }
